@@ -17,6 +17,15 @@ const POPUPS = [
 const visible = reactive<Record<string, boolean>>({})
 const timers: ReturnType<typeof setTimeout>[] = []
 
+// 겹친 팝업의 앞뒤 순서(z-index). 초기: 앞(popup1) 위, 뒤(popup2) 아래.
+const zCounter = ref(2)
+const zOrder = reactive<Record<string, number>>({ popup2: 1, popup1: 2 })
+
+// 클릭한 팝업을 맨 앞으로 (창 관리자처럼)
+function raise(id: string) {
+  zOrder[id] = ++zCounter.value
+}
+
 const shownPopups = computed(() => POPUPS.filter((p) => visible[p.id]))
 const anyVisible = computed(() => shownPopups.value.length > 0)
 
@@ -72,6 +81,8 @@ function openDetail() {
           :key="p.id"
           class="popup-slot"
           :class="p.slot"
+          :style="{ zIndex: zOrder[p.id] }"
+          @pointerdown="raise(p.id)"
         >
           <AlertPopup
             :id="p.id"
@@ -171,29 +182,27 @@ function openDetail() {
   pointer-events: none; /* 배경 클릭은 통과, 팝업만 상호작용 */
 }
 
-/* 팝업은 470:757 고정 비율. 세로가 넘치지 않도록 57vh(=92vh*470/757)로도 폭을 제한 */
+/* 팝업 높이 ≈ 폭×1.637. 세로가 넘치지 않도록 56vh(=92vh/1.637)로도 폭을 제한 */
 .popup-slot {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(420px, calc(100vw - 40px), 57vh);
+  width: min(420px, calc(100vw - 40px), 56vh);
   pointer-events: auto; /* 팝업은 클릭 가능 */
 }
 
 .slot-back {
   transform: translate(calc(-50% - 78px), calc(-50% - 72px));
-  z-index: 100;
 }
 
 .slot-front {
   transform: translate(calc(-50% + 78px), calc(-50% + 72px));
-  z-index: 101;
 }
 
 /* 좁은 화면/모바일: 팝업은 화면 안에 여백을 두고 축소, 겹침은 유지 */
 @media (max-width: 640px) {
   .popup-slot {
-    width: min(300px, calc(100vw - 64px), 57vh);
+    width: min(300px, calc(100vw - 64px), 56vh);
   }
   .slot-back {
     transform: translate(calc(-50% - 14px), calc(-50% - 40px));

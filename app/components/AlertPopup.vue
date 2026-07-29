@@ -116,23 +116,21 @@ onBeforeUnmount(() => {
 
 <style scoped>
 /*
- * Figma 기준 비율 (node 47-232, 470 × 757):
- *   - 헤더  : 38/757  ≈ 5.02%
- *   - 푸터  : 79/757  ≈ 10.44%
- *   - 본문  : 나머지 ≈ 84.5% (포스터는 object-fit: contain으로 배치)
- *   - 팝업 전체 비율 470:757 (1:1.611)
+ * Figma 기준 (node 47-232, 470폭):
+ *   - 헤더 38px → 8.09cqw, 푸터 79px → 16.8cqw (폭 기준 고정)
+ *   - 본문 포스터는 사방 균일 padding(cqw)으로 배치 → 레터박스 없이 여백 동일
+ *   - 팝업 높이는 내용에 따라 결정(≈ 폭 × 1.637)
  */
 .popup {
   /* 팝업 전체 폰트: 맑은 고딕 */
   font-family: 'Malgun Gothic', 'malgun gothic', '맑은 고딕', 'Apple SD Gothic Neo',
     sans-serif;
   width: 100%;
-  aspect-ratio: 470 / 757;
   /* 자식 요소가 팝업 폭(cqw) 기준으로 스케일되도록 컨테이너 지정 */
   container-type: inline-size;
   background: #fff;
-  /* 팝업 폭에 비례하는 라운드 (14px @ 470폭) */
-  border-radius: clamp(8px, 3cqw, 14px);
+  /* 팝업 폭에 비례하는 라운드 */
+  border-radius: clamp(4px, 1.6cqw, 8px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -147,7 +145,9 @@ onBeforeUnmount(() => {
 }
 
 .popup-header {
-  flex: 0 0 5.02%;
+  /* Figma 헤더 38px @ 470폭 = 8.09cqw */
+  flex: 0 0 auto;
+  height: 8.09cqw;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -202,24 +202,26 @@ onBeforeUnmount(() => {
 }
 
 .popup-body {
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
   overflow: hidden;
   background: #fff;
 }
 
 .poster {
-  /* 상하 여백도 팝업 폭에 맞춰 축소 (13px @ 470폭) */
-  padding-top: clamp(6px, 2.8cqw, 13px);
-  padding-bottom: clamp(6px, 2.8cqw, 13px);
+  /*
+   * 포스터가 자기 높이를 결정 → object-fit 레터박스 없음 → 사방 여백이 padding 값으로 정확히 동일.
+   * padding은 팝업 폭 기준(cqw)이라 어떤 크기에서도 상·하·좌·우가 같게 유지된다.
+   */
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
+  padding: 3.15cqw;
 }
 
 .popup-footer {
-  flex: 0 0 10.44%;
+  /* Figma 푸터 79px @ 470폭 = 16.8cqw */
+  flex: 0 0 auto;
+  min-height: 16.8cqw;
   display: flex;
   align-items: center;
   justify-content: space-between;
