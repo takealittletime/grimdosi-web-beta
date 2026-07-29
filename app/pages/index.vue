@@ -190,29 +190,16 @@ function openDetail() {
   z-index: 101;
 }
 
-/* 태블릿/좁은 화면: 겹침 오프셋 축소 */
+/* 좁은 화면/모바일: 팝업은 화면 안에 여백을 두고 축소, 겹침은 유지 */
 @media (max-width: 640px) {
   .popup-slot {
-    width: min(360px, calc(100vw - 44px));
+    width: min(300px, calc(100vw - 64px));
   }
   .slot-back {
     transform: translate(calc(-50% - 14px), calc(-50% - 40px));
   }
   .slot-front {
     transform: translate(calc(-50% + 14px), calc(-50% + 40px));
-  }
-}
-
-/* 모바일: 팝업 폭을 화면에 맞게 더 축소 */
-@media (max-width: 420px) {
-  .popup-slot {
-    width: calc(100vw - 32px);
-  }
-  .slot-back {
-    transform: translate(calc(-50% - 8px), calc(-50% - 30px));
-  }
-  .slot-front {
-    transform: translate(calc(-50% + 8px), calc(-50% + 30px));
   }
 }
 

@@ -180,21 +180,30 @@ function onClose() {
 }
 
 @media (max-width: 480px) {
-  /* 좁은 화면: 세로로 쌓되 왼쪽 정렬 유지(가운데 정렬 방지) */
+  /* 좁은 화면: 한 줄 유지(체크박스 왼쪽·버튼 오른쪽), 넘치면 왼쪽 정렬로 줄바꿈 */
   .popup-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 12px 14px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px 10px;
+    padding: 12px;
   }
-  .footer-buttons {
-    width: 100%;
+  .popup-body {
+    padding: 10px;
+  }
+  .dont-show {
+    font-size: 11px;
+    gap: 5px;
+  }
+  .dont-show input {
+    width: 14px;
+    height: 14px;
   }
   .btn {
-    flex: 1;
-    padding: 9px 10px;
-    font-size: 13px;
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+  .footer-buttons {
+    gap: 6px;
   }
   .popup-header {
     padding: 12px 14px;
