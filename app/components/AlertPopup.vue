@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import txtAlert from '~/assets/긴급알림.png'
+import txtClose from '~/assets/닫기.png'
+import txtDontShow from '~/assets/오늘하루동안보지않기.png'
+import txtDetail from '~/assets/자세히보기2.png'
+
 const props = defineProps<{
   id: string
   image: string
@@ -39,7 +44,7 @@ function onClose() {
           <path d="M10.268 21a2 2 0 0 0 3.464 0" />
           <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
         </svg>
-        긴급 알림
+        <img :src="txtAlert" alt="긴급 알림" class="txt-alert" />
       </span>
       <button class="header-x" aria-label="닫기" @click="onClose">✕</button>
     </header>
@@ -51,12 +56,14 @@ function onClose() {
     <footer class="popup-footer">
       <label class="dont-show">
         <input v-model="dontShow" type="checkbox" />
-        <span>오늘 하루동안 보지 않기</span>
+        <img :src="txtDontShow" alt="오늘 하루동안 보지 않기" class="txt-dontshow" />
       </label>
       <div class="footer-buttons">
-        <button class="btn btn-close" @click="onClose">닫기</button>
+        <button class="btn btn-close" @click="onClose">
+          <img :src="txtClose" alt="닫기" class="txt-btn" />
+        </button>
         <button class="btn btn-detail" @click="emit('detail')">
-          자세히 보기 <span aria-hidden="true">›</span>
+          <img :src="txtDetail" alt="자세히 보기" class="txt-btn" />
         </button>
       </div>
     </footer>
@@ -99,17 +106,34 @@ function onClose() {
 }
 
 .popup-title {
-  font-size: clamp(8px, 3.4cqw, 16px);
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 0.45em;
+  gap: clamp(4px, 1.4cqw, 7px);
 }
 
 .bell {
-  width: 1.25em;
-  height: 1.25em;
+  width: clamp(11px, 3.6cqw, 17px);
+  height: clamp(11px, 3.6cqw, 17px);
   flex: 0 0 auto;
+}
+
+/* 텍스트 대신 넣는 PNG들: 팝업 폭(cqw) 기준으로 스케일, 원본 크기 이상으로 확대 안 함 */
+.txt-alert {
+  height: clamp(9px, 3cqw, 13px);
+  width: auto;
+  display: block;
+}
+
+.txt-dontshow {
+  height: clamp(7px, 2.2cqw, 10px);
+  width: auto;
+  display: block;
+}
+
+.txt-btn {
+  height: clamp(8px, 2.6cqw, 12px);
+  width: auto;
+  display: block;
 }
 
 .header-x {
@@ -204,12 +228,14 @@ function onClose() {
 /* 기본: 흰 배경 + 연한 회색 테두리 (#EEEDEE), hover 시 회색 채움 (#D2D0D1) */
 .btn {
   min-width: clamp(58px, 23.4cqw, 110px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #fff;
   border: 1px solid #eeedee;
   color: #202020;
   font-size: clamp(9px, 3cqw, 14px);
   font-weight: 700;
-  text-align: center;
   padding: clamp(6px, 2.5cqw, 12px) clamp(10px, 4cqw, 20px);
   border-radius: clamp(3px, 1.1cqw, 5px);
   white-space: nowrap;
@@ -219,13 +245,6 @@ function onClose() {
 .btn:hover {
   background: #d2d0d1;
   border-color: #d2d0d1;
-}
-
-.btn-detail {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3em;
 }
 
 /*
