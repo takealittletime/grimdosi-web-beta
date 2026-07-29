@@ -64,15 +64,24 @@ function onClose() {
 </template>
 
 <style scoped>
+/*
+ * Figma 기준 비율 (node 47-232, 470 × 757):
+ *   - 헤더  : 38/757  ≈ 5.02%
+ *   - 푸터  : 79/757  ≈ 10.44%
+ *   - 본문  : 나머지 ≈ 84.5% (포스터는 object-fit: contain으로 배치)
+ *   - 팝업 전체 비율 470:757 (1:1.611)
+ */
 .popup {
   /* 팝업 전체 폰트: 맑은 고딕 */
   font-family: 'Malgun Gothic', 'malgun gothic', '맑은 고딕', 'Apple SD Gothic Neo',
     sans-serif;
   width: 100%;
-  max-width: 420px;
-  max-height: 92vh;
+  aspect-ratio: 470 / 757;
+  /* 자식 요소가 팝업 폭(cqw) 기준으로 스케일되도록 컨테이너 지정 */
+  container-type: inline-size;
   background: #fff;
-  border-radius: 14px;
+  /* 팝업 폭에 비례하는 라운드 (14px @ 470폭) */
+  border-radius: clamp(8px, 3cqw, 14px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -80,28 +89,34 @@ function onClose() {
 }
 
 .popup-header {
-  flex: 0 0 auto;
+  flex: 0 0 5.02%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
+  padding: 0 clamp(8px, 4%, 18px);
   background: var(--grim-blue);
   color: #fff;
 }
 
 .popup-title {
-  font-size: 16px;
+  font-size: clamp(8px, 3.4cqw, 16px);
   font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 0.45em;
+}
+
+.bell {
+  width: 1.25em;
+  height: 1.25em;
+  flex: 0 0 auto;
 }
 
 .header-x {
   border: none;
   background: transparent;
   color: #fff;
-  font-size: 18px;
+  font-size: clamp(10px, 3.8cqw, 18px);
   line-height: 1;
   padding: 4px;
   opacity: 0.95;
@@ -113,103 +128,130 @@ function onClose() {
 
 .popup-body {
   flex: 1 1 auto;
-  overflow-y: auto;
-  padding: 14px;
+  min-height: 0;
+  overflow: hidden;
   background: #fff;
 }
 
 .poster {
+  /* 상하 여백도 팝업 폭에 맞춰 축소 (13px @ 470폭) */
+  padding-top: clamp(6px, 2.8cqw, 13px);
+  padding-bottom: clamp(6px, 2.8cqw, 13px);
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 4px;
+  height: 100%;
+  object-fit: contain;
 }
 
 .popup-footer {
-  flex: 0 0 auto;
+  flex: 0 0 10.44%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 14px 16px;
-  border-top: 1px solid #eef0f2;
-  flex-wrap: wrap;
+  padding: 0 clamp(12px, 4%, 16px);
+  border-top: 1px solid #D2D0D1;
 }
 
 .dont-show {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-size: 13px;
-  color: #666;
+  gap: 0.55em;
+  font-size: clamp(8px, 2.8cqw, 13px);
+  color: #202020;
   user-select: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 체크박스: 라운드 사각 아웃라인 (#B5B5B5), 약 18px @ 470폭 */
+.dont-show input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: clamp(11px, 3.8cqw, 18px);
+  height: clamp(11px, 3.8cqw, 18px);
+  flex: 0 0 auto;
+  border: 1px solid #b5b5b5;
+  border-radius: 4px;
+  background: #fff;
+  position: relative;
   cursor: pointer;
 }
 
-.dont-show input {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
+/* 체크됨: 브랜드 블루 채움 + 흰 체크 */
+.dont-show input:checked {
+  background: var(--grim-blue);
+  border-color: var(--grim-blue);
+}
+
+.dont-show input:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 26%;
+  height: 54%;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -55%) rotate(45deg);
 }
 
 .footer-buttons {
   display: flex;
-  gap: 8px;
+  gap: clamp(5px, 1.3cqw, 6px);
 }
 
+/* 기본: 흰 배경 + 연한 회색 테두리 (#EEEDEE), hover 시 회색 채움 (#D2D0D1) */
 .btn {
-  border: 1px solid #d6d9dd;
+  min-width: clamp(58px, 23.4cqw, 110px);
   background: #fff;
-  color: #333;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 9px 16px;
-  border-radius: 8px;
+  border: 1px solid #eeedee;
+  color: #202020;
+  font-size: clamp(9px, 3cqw, 14px);
+  font-weight: 700;
+  text-align: center;
+  padding: clamp(6px, 2.5cqw, 12px) clamp(10px, 4cqw, 20px);
+  border-radius: clamp(3px, 1.1cqw, 5px);
+  white-space: nowrap;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .btn:hover {
-  background: #d3d3d3;
-  border-color: #c4c4c4;
+  background: #d2d0d1;
+  border-color: #d2d0d1;
 }
 
 .btn-detail {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 0.3em;
 }
 
-@media (max-width: 480px) {
-  /* 좁은 화면: 한 줄 유지(체크박스 왼쪽·버튼 오른쪽), 넘치면 왼쪽 정렬로 줄바꿈 */
+/*
+ * 좁은 팝업(모바일 등): 한 줄에 다 못 들어가 잘리므로 두 줄로 줄바꿈.
+ * 체크박스 줄(위) + 버튼 줄(아래, 반반 분할). 왼쪽 정렬 유지, 잘림 방지.
+ * 팝업이 컨테이너(container-type: inline-size)라 팝업 폭 기준으로 동작.
+ */
+@container (max-width: 380px) {
   .popup-footer {
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px 10px;
-    padding: 12px;
-  }
-  .popup-body {
-    padding: 10px;
+    flex: 0 0 auto; /* 고정 높이 비율 해제 → 내용 높이만큼 */
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: center;
+    row-gap: clamp(6px, 2.5cqw, 10px);
+    padding-top: clamp(8px, 3cqw, 12px);
+    padding-bottom: clamp(8px, 3cqw, 12px);
   }
   .dont-show {
-    font-size: 11px;
-    gap: 5px;
-  }
-  .dont-show input {
-    width: 14px;
-    height: 14px;
-  }
-  .btn {
-    padding: 7px 9px;
-    font-size: 12px;
+    flex: 1 0 100%; /* 체크박스 줄이 한 줄 전체 차지 → 버튼은 다음 줄로 */
   }
   .footer-buttons {
-    gap: 6px;
+    width: 100%;
   }
-  .popup-header {
-    padding: 12px 14px;
-  }
-  .popup-title {
-    font-size: 15px;
+  .btn {
+    flex: 1;
+    min-width: 0; /* 두 버튼이 줄을 반반 나눠 채움 */
   }
 }
 </style>

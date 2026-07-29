@@ -8,8 +8,6 @@ import popup2 from '~/assets/popup2.png'
 
 const INSTAGRAM_URL = 'https://www.instagram.com/grimdosi?igsh=a2k1dDRxdDE5YW8x'
 
-const { isDismissedToday, dismissForToday } = useDailyDismiss()
-
 // 뒤(back) → 앞(front) 순서로 1초 간격을 두고 겹쳐서 표시한다.
 const POPUPS = [
   { id: 'popup2', image: popup2, alt: '그림도시 공공안부 긴급 알림 포스터 2', slot: 'slot-back' },
@@ -23,16 +21,16 @@ const shownPopups = computed(() => POPUPS.filter((p) => visible[p.id]))
 const anyVisible = computed(() => shownPopups.value.length > 0)
 
 onMounted(() => {
-  // 오늘 dismiss되지 않은 팝업만, 1초 간격으로 순차 등장(겹침)
-  POPUPS.filter((p) => !isDismissedToday(p.id)).forEach((p, i) => {
-    timers.push(setTimeout(() => (visible[p.id] = true), i * 1000))
+  // 접속 후 1.5초 대기 → 첫 팝업, 이후 1초 간격으로 겹쳐서 등장
+  POPUPS.forEach((p, i) => {
+    timers.push(setTimeout(() => (visible[p.id] = true), 1500 + i * 1000))
   })
 })
 
 onBeforeUnmount(() => timers.forEach(clearTimeout))
 
-function handleClose(id: string, dontShowToday: boolean) {
-  if (dontShowToday) dismissForToday(id)
+function handleClose(id: string) {
+  // '오늘 하루동안 보지 않기'는 실제 동작하지 않음(재접속 시 항상 다시 노출)
   visible[id] = false
 }
 
@@ -79,7 +77,7 @@ function openDetail() {
             :id="p.id"
             :image="p.image"
             :alt="p.alt"
-            @close="(dont: boolean) => handleClose(p.id, dont)"
+            @close="() => handleClose(p.id)"
             @detail="openDetail"
           />
         </div>
@@ -170,14 +168,16 @@ function openDetail() {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none; /* 배경 클릭은 통과, 팝업만 상호작용 */
 }
 
+/* 팝업은 470:757 고정 비율. 세로가 넘치지 않도록 57vh(=92vh*470/757)로도 폭을 제한 */
 .popup-slot {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(420px, calc(100vw - 40px));
+  width: min(420px, calc(100vw - 40px), 57vh);
+  pointer-events: auto; /* 팝업은 클릭 가능 */
 }
 
 .slot-back {
@@ -193,7 +193,7 @@ function openDetail() {
 /* 좁은 화면/모바일: 팝업은 화면 안에 여백을 두고 축소, 겹침은 유지 */
 @media (max-width: 640px) {
   .popup-slot {
-    width: min(300px, calc(100vw - 64px));
+    width: min(300px, calc(100vw - 64px), 57vh);
   }
   .slot-back {
     transform: translate(calc(-50% - 14px), calc(-50% - 40px));
@@ -205,7 +205,7 @@ function openDetail() {
 
 /* 등장 애니메이션 */
 .pop-enter-active {
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pop-enter-from {
   opacity: 0;

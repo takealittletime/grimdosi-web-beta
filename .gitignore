@@ -15,3 +15,6 @@ logs
 .DS_Store
 .env
 .vercel
+
+# Claude 로컬 지침 (git에 올리지 않음)
+.claude/
