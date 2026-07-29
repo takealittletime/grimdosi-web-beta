@@ -22,10 +22,54 @@ const dontShow = ref(false)
 function onClose() {
   emit('close', dontShow.value)
 }
+
+/* ---- 팝업 드래그 이동 ---- */
+const dragX = ref(0)
+const dragY = ref(0)
+const dragging = ref(false)
+let originX = 0
+let originY = 0
+
+function onPointerDown(e: PointerEvent) {
+  // 버튼·체크박스 등 인터랙션 요소에서는 드래그 시작 안 함
+  const el = e.target as HTMLElement
+  if (el.closest('button, input, label, a')) return
+  e.preventDefault()
+  dragging.value = true
+  originX = e.clientX - dragX.value
+  originY = e.clientY - dragY.value
+  window.addEventListener('pointermove', onPointerMove)
+  window.addEventListener('pointerup', onPointerUp)
+}
+
+function onPointerMove(e: PointerEvent) {
+  if (!dragging.value) return
+  dragX.value = e.clientX - originX
+  dragY.value = e.clientY - originY
+}
+
+function onPointerUp() {
+  dragging.value = false
+  window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('pointerup', onPointerUp)
+}
+
+onBeforeUnmount(() => {
+  window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('pointerup', onPointerUp)
+})
 </script>
 
 <template>
-  <div class="popup" role="dialog" aria-modal="true" aria-label="긴급 알림">
+  <div
+    class="popup"
+    :class="{ dragging }"
+    :style="{ transform: `translate(${dragX}px, ${dragY}px)` }"
+    role="dialog"
+    aria-modal="true"
+    aria-label="긴급 알림"
+    @pointerdown="onPointerDown"
+  >
     <header class="popup-header">
       <span class="popup-title">
         <svg
@@ -93,6 +137,13 @@ function onClose() {
   display: flex;
   flex-direction: column;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+  touch-action: none;
+}
+
+.popup.dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .popup-header {

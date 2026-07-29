@@ -6,7 +6,7 @@ import contents from '~/assets/contents.png'
 import popup1 from '~/assets/popup1.png'
 import popup2 from '~/assets/popup2.png'
 
-const INSTAGRAM_URL = 'https://www.instagram.com/grimdosi?igsh=a2k1dDRxdDE5YW8x'
+const INSTAGRAM_URL = 'https://www.instagram.com/grimdosi/'
 
 // 뒤(back) → 앞(front) 순서로 1초 간격을 두고 겹쳐서 표시한다.
 const POPUPS = [
