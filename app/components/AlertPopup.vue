@@ -180,14 +180,27 @@ function onClose() {
 }
 
 @media (max-width: 480px) {
+  /* 좁은 화면: 세로로 쌓되 왼쪽 정렬 유지(가운데 정렬 방지) */
   .popup-footer {
-    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
   }
   .footer-buttons {
     width: 100%;
   }
   .btn {
     flex: 1;
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+  .popup-header {
+    padding: 12px 14px;
+  }
+  .popup-title {
+    font-size: 15px;
   }
 }
 </style>

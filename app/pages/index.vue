@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import alertIcon from '~/assets/alert_icon.png'
-import bottomLogo from '~/assets/bottom_logo.png'
+import contents from '~/assets/contents.png'
+// --- 이전 메인 페이지 에셋 (주석 처리) ---
+// import alertIcon from '~/assets/alert_icon.png'
+// import bottomLogo from '~/assets/bottom_logo.png'
 import popup1 from '~/assets/popup1.png'
 import popup2 from '~/assets/popup2.png'
 
@@ -42,6 +44,11 @@ function openDetail() {
 <template>
   <div class="landing">
     <main class="content">
+      <img :src="contents" alt="홈페이지 오픈 준비중입니다. @grimdosi" class="contents-img" />
+    </main>
+
+    <!-- ===== 이전 메인 페이지 내용 (주석 처리) =====
+    <main class="content">
       <img :src="alertIcon" alt="" class="alert-icon" />
 
       <h1 class="title">
@@ -57,6 +64,7 @@ function openDetail() {
 
       <img :src="bottomLogo" alt="공공안부 · GRIMDOSI PUBLIC HELLO" class="bottom-logo" />
     </main>
+    ============================================ -->
 
     <!-- 겹쳐서 뜨는 긴급 알림 팝업들 -->
     <div v-if="anyVisible" class="popup-layer">
@@ -106,6 +114,11 @@ function openDetail() {
   align-items: center;
   text-align: center;
   max-width: 640px;
+}
+
+.contents-img {
+  width: min(100%, 900px);
+  height: auto;
 }
 
 .alert-icon {
@@ -177,12 +190,29 @@ function openDetail() {
   z-index: 101;
 }
 
+/* 태블릿/좁은 화면: 겹침 오프셋 축소 */
 @media (max-width: 640px) {
+  .popup-slot {
+    width: min(360px, calc(100vw - 44px));
+  }
   .slot-back {
-    transform: translate(calc(-50% - 16px), calc(-50% - 44px));
+    transform: translate(calc(-50% - 14px), calc(-50% - 40px));
   }
   .slot-front {
-    transform: translate(calc(-50% + 16px), calc(-50% + 44px));
+    transform: translate(calc(-50% + 14px), calc(-50% + 40px));
+  }
+}
+
+/* 모바일: 팝업 폭을 화면에 맞게 더 축소 */
+@media (max-width: 420px) {
+  .popup-slot {
+    width: calc(100vw - 32px);
+  }
+  .slot-back {
+    transform: translate(calc(-50% - 8px), calc(-50% - 30px));
+  }
+  .slot-front {
+    transform: translate(calc(-50% + 8px), calc(-50% + 30px));
   }
 }
 
