@@ -130,6 +130,13 @@ function openDetail() {
   height: auto;
 }
 
+/* 모바일: 좌우 여백을 더 주어 이미지를 조금 작게 */
+@media (max-width: 640px) {
+  .contents-img {
+    width: 70vw;
+  }
+}
+
 .alert-icon {
   width: clamp(84px, 12vw, 128px);
   height: auto;

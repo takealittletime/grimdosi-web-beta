@@ -12,6 +12,7 @@ export default defineNuxtConfig({
         { name: 'description', content: '그림도시 공공안부 — 홈페이지 오픈 준비중입니다.' }
       ],
       link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
         {
           rel: 'stylesheet',
           href: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css'
